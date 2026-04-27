@@ -1,5 +1,5 @@
 diff --git a/chrome/app/chromium_strings.grd b/chrome/app/chromium_strings.grd
-index c7682a0e8c..c75543b879 100644
+index c7682a0e8c67a6af128671f042cc4b2529f3fecb..c75543b879a982c5da80016c4e70d57e89cbcbf7 100644
 --- a/chrome/app/chromium_strings.grd
 +++ b/chrome/app/chromium_strings.grd
 @@ -302,22 +302,22 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
@@ -6847,7 +6847,7 @@ zQW{TZp8&?v<LSd}P=QiqmDts}uG7B({9X-eO84>fI$*S@MpOHIelu!i%FcEZ&I$?O
 mE-*vx^Z8M~Pnk4weg6mFwT&R~U}QW10000<MNUMnLSTYeS}1e?
 
 diff --git a/chrome/browser/navigation_predictor/navigation_predictor.cc b/chrome/browser/navigation_predictor/navigation_predictor.cc
-index 2ab0f99a10..a1030fd3a0 100644
+index 2ab0f99a10c907f9148126fd7c8f6405fc1347df..a1030fd3a0fc4de72ade2e108ea1ba283af4ffe5 100644
 --- a/chrome/browser/navigation_predictor/navigation_predictor.cc
 +++ b/chrome/browser/navigation_predictor/navigation_predictor.cc
 @@ -270,6 +270,55 @@ NavigationPredictor::GetNavigationPredictorMetricsDocumentData() const {
@@ -6918,7 +6918,7 @@ index 2ab0f99a10..a1030fd3a0 100644
    // exist. Note that NavigationPredictor only runs on the main frame, but get
    // reports for links from all same-process iframes.
 diff --git a/chrome/browser/navigation_predictor/navigation_predictor.h b/chrome/browser/navigation_predictor/navigation_predictor.h
-index 5ea17b0cc6..a95d9ea97a 100644
+index 5ea17b0cc6192b9464ec60bab79757e2820ed34c..a95d9ea97afd506b174b5649c46515c902482d9c 100644
 --- a/chrome/browser/navigation_predictor/navigation_predictor.h
 +++ b/chrome/browser/navigation_predictor/navigation_predictor.h
 @@ -97,6 +97,8 @@ class NavigationPredictor
@@ -6931,7 +6931,7 @@ index 5ea17b0cc6..a95d9ea97a 100644
        blink::mojom::AnchorElementPointerEventForMLModelPtr pointer_event)
        override;
 diff --git a/components/search_engines/template_url_starter_pack_data.cc b/components/search_engines/template_url_starter_pack_data.cc
-index 4ad0bb0eb1..48d20d1f73 100644
+index 4ad0bb0eb1c07f4778ee814df37702cedbcb3e02..48d20d1f734e880d5302bcda5e00c4fed0213c66 100644
 --- a/components/search_engines/template_url_starter_pack_data.cc
 +++ b/components/search_engines/template_url_starter_pack_data.cc
 @@ -17,7 +17,7 @@
@@ -6953,7 +6953,7 @@ index 4ad0bb0eb1..48d20d1f73 100644
  
  int GetDataVersion() {
 diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
-index 96be9c5824..f9e6a24ad1 100644
+index 96be9c582433eadd25873112f60ce1a31a8d2093..f9e6a24ad13d124822825f52404b017d835125f0 100644
 --- a/content/browser/renderer_host/render_process_host_impl.cc
 +++ b/content/browser/renderer_host/render_process_host_impl.cc
 @@ -3732,6 +3732,28 @@ void RenderProcessHostImpl::AppendRendererCommandLine(
@@ -6986,7 +6986,7 @@ index 96be9c5824..f9e6a24ad1 100644
      command_line->AppendSwitch(switches::kDisallowV8FeatureFlagOverrides);
    }
 diff --git a/gin/v8_initializer.cc b/gin/v8_initializer.cc
-index 028b9b0a10..8f8a259904 100644
+index 028b9b0a10dc2e315295413c0c7459166ba492ca..8f8a259904d3ec88a3c2841219e13f9fd381303a 100644
 --- a/gin/v8_initializer.cc
 +++ b/gin/v8_initializer.cc
 @@ -302,6 +302,10 @@ void SetDefaultEnabledFeatureFlags() {
@@ -7001,7 +7001,7 @@ index 028b9b0a10..8f8a259904 100644
  
  // Sets feature controlled V8 flags.
 diff --git a/gpu/command_buffer/service/gpu_switches.cc b/gpu/command_buffer/service/gpu_switches.cc
-index 07e634bc57..17c1798ccd 100644
+index 07e634bc57a711bc48acb43fd62e956884d34a9d..17c1798ccdb307abdef6bc94346694e6966b4f46 100644
 --- a/gpu/command_buffer/service/gpu_switches.cc
 +++ b/gpu/command_buffer/service/gpu_switches.cc
 @@ -21,6 +21,12 @@ const char kDisableShaderNameHashing[]      = "disable-shader-name-hashing";
@@ -7018,7 +7018,7 @@ index 07e634bc57..17c1798ccd 100644
  const char kEnableGPUDebugging[]            = "enable-gpu-debugging";
  
 diff --git a/gpu/command_buffer/service/gpu_switches.h b/gpu/command_buffer/service/gpu_switches.h
-index e705b7eee7..425214cc5b 100644
+index e705b7eee78fb80bbb67ffb75b575800b372f7eb..425214cc5bdddb0ab4212f76cc662f11164805a0 100644
 --- a/gpu/command_buffer/service/gpu_switches.h
 +++ b/gpu/command_buffer/service/gpu_switches.h
 @@ -18,6 +18,8 @@ GPU_COMMAND_BUFFER_SERVICE_EXPORT extern const char kDisableGLErrorLimit[];
@@ -7031,7 +7031,7 @@ index e705b7eee7..425214cc5b 100644
  GPU_COMMAND_BUFFER_SERVICE_EXPORT extern const char
      kEnableGPUServiceLoggingGPU[];
 diff --git a/third_party/blink/renderer/core/dom/element.cc b/third_party/blink/renderer/core/dom/element.cc
-index 956d03442a..b6bc3d257a 100644
+index 956d03442a39cc5d3eeeeedeec980e9f62626458..b6bc3d257aa47911663a98b948430373cf129314 100644
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
 @@ -2471,6 +2471,15 @@ int Element::OffsetTop() {
@@ -7065,7 +7065,7 @@ index 956d03442a..b6bc3d257a 100644
        this, DocumentUpdateReason::kJavaScript);
    if (const auto* layout_object = GetLayoutBoxModelObject()) {
 diff --git a/third_party/blink/renderer/core/html/html_element.cc b/third_party/blink/renderer/core/html/html_element.cc
-index 4162d13b58..8814e7f80d 100644
+index 4162d13b58b7b2dbfdc078f6d92a697050c8ea14..8814e7f80df67c7b268832ee871fc990f8b3ef0c 100644
 --- a/third_party/blink/renderer/core/html/html_element.cc
 +++ b/third_party/blink/renderer/core/html/html_element.cc
 @@ -3834,6 +3834,11 @@ int HTMLElement::offsetTopForBinding() {
@@ -7093,7 +7093,7 @@ index 4162d13b58..8814e7f80d 100644
        this, DocumentUpdateReason::kJavaScript);
    int result = 0;
 diff --git a/third_party/blink/renderer/core/html/resources/html.css b/third_party/blink/renderer/core/html/resources/html.css
-index fe24234fac..8c3b6a902d 100644
+index fe24234fac6d292df393a2b558847ff195f245a4..8c3b6a902d75fed76ac58f70300001764ecc2595 100644
 --- a/third_party/blink/renderer/core/html/resources/html.css
 +++ b/third_party/blink/renderer/core/html/resources/html.css
 @@ -76,7 +76,8 @@ div {
@@ -7107,7 +7107,7 @@ index fe24234fac..8c3b6a902d 100644
  
  marquee {
 diff --git a/ui/gl/gl_switches.cc b/ui/gl/gl_switches.cc
-index 43f8823a2e..9b607c5701 100644
+index 43f8823a2e04715783e34f5f0401a1acd228bfc1..9b607c570181bba5068f5ed30d01aa75249a7a26 100644
 --- a/ui/gl/gl_switches.cc
 +++ b/ui/gl/gl_switches.cc
 @@ -78,6 +78,8 @@ const char kDisableGpuVsync[]               = "disable-gpu-vsync";
@@ -7120,7 +7120,7 @@ index 43f8823a2e..9b607c5701 100644
  const char kEnableGPUServiceTracing[]       = "enable-gpu-service-tracing";
  
 diff --git a/ui/gl/gl_switches.h b/ui/gl/gl_switches.h
-index 80ed201e13..756d1ad635 100644
+index 80ed201e13107b3fe60af8a5b650e5a0b6c178d0..756d1ad635a8586628e90f3c8ac8aaf94ba488b6 100644
 --- a/ui/gl/gl_switches.h
 +++ b/ui/gl/gl_switches.h
 @@ -61,6 +61,7 @@ namespace switches {
