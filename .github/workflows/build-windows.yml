@@ -36,8 +36,7 @@ jobs:
     - name: Apply Flux Engine Patch
       run: |
         cd chromium_build/src
-        sed -i 's/\r$//' ../../flux-config/flux_engine_v1.patch
-        git apply ../../flux-config/flux_engine_v1.patch
+        patch -p1 < ../../flux-config/flux_engine_v1.patch
       shell: bash
 
     - name: Configure Flux Build Flags
