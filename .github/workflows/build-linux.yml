@@ -1,4 +1,4 @@
-name: Build Flux (macOS)
+name: Build Flux (Linux)
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14 # M1/ARM64 runner
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout Flux Config
@@ -15,17 +15,10 @@ jobs:
       with:
         path: flux-config
 
-    - name: Free up disk space (macOS)
+    - name: Install Dependencies
       run: |
-        sudo rm -rf /Applications/Xcode_14*.app
-        sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/*
-        df -h
-
-    - name: Select Xcode Version
-      run: |
-        # Use the latest stable Xcode 15 on macOS 14 runners
-        sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
-        xcodebuild -version
+        sudo apt-get update
+        sudo apt-get install -y python3 git curl xz-utils bzip2 pkg-config libnss3-dev libcups2-dev libpci-dev libkrb5-dev libatk1.0-dev libatk-bridge2-0-dev libdrm-dev libmesa-dev libgbm-dev libasound2-dev
 
     - name: Setup depot_tools
       run: |
@@ -49,9 +42,10 @@ jobs:
       run: |
         cd chromium_build/src
         mkdir -p out/Default
-        # Copy the build flags and ensure target_os is set to mac
         cp ../../flux-config/flux_build_flags.gn out/Default/args.gn
-        echo 'target_os="mac"' >> out/Default/args.gn
+        # Update target_os and target_cpu for Linux
+        sed -i 's/target_os = "mac"/target_os = "linux"/' out/Default/args.gn
+        sed -i 's/target_cpu = "arm64"/target_cpu = "x64"/' out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine
@@ -59,14 +53,14 @@ jobs:
         cd chromium_build/src
         autoninja -C out/Default chrome
 
-    - name: Package macOS App
+    - name: Package Linux Binary
       run: |
-        cd chromium_build/src
-        autoninja -C out/Default mac_installer
+        cd chromium_build/src/out/Default
+        tar -czvf flux-linux-x64.tar.gz chrome chrome_100_percent.pak chrome_200_percent.pak resources.pak icudtl.dat locales/
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Flux-MacOS-ARM64
-        path: chromium_build/src/out/Default/*.dmg
+        name: Flux-Linux-x64
+        path: chromium_build/src/out/Default/flux-linux-x64.tar.gz
         retention-days: 7
