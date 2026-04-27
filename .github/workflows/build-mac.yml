@@ -51,6 +51,7 @@ jobs:
         echo 'target_cpu="arm64"' >> out/Default/args.gn
         echo 'chrome_pgo_phase = 0' >> out/Default/args.gn
         echo 'mac_sdk_min = "14.0"' >> out/Default/args.gn
+        echo 'use_clang_modules = false' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine
