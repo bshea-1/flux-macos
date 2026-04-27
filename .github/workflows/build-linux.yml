@@ -46,6 +46,7 @@ jobs:
         # Update target_os and target_cpu for Linux
         echo 'target_os = "linux"' >> out/Default/args.gn
         echo 'target_cpu = "x64"' >> out/Default/args.gn
+        echo 'chrome_pgo_phase = 0' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine

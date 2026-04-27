@@ -34,7 +34,7 @@ jobs:
     - name: Apply Flux Engine Patch
       run: |
         cd chromium_build\src
-        git apply ..\..\flux-config\flux_engine_v1.patch
+        git apply ../../flux-config/flux_engine_v1.patch
       shell: cmd
 
     - name: Configure Flux Build Flags
@@ -44,6 +44,7 @@ jobs:
         copy ..\..\flux-config\flux_build_flags.gn out\Default\args.gn
         echo target_os = "win">> out\Default\args.gn
         echo target_cpu = "x64">> out\Default\args.gn
+        echo chrome_pgo_phase = 0>> out\Default\args.gn
         set DEPOT_TOOLS_WIN_TOOLCHAIN=0
         gn gen out\Default
       shell: cmd

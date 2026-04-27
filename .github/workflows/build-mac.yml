@@ -53,6 +53,7 @@ jobs:
         cp ../../flux-config/flux_build_flags.gn out/Default/args.gn
         echo 'target_os="mac"' >> out/Default/args.gn
         echo 'target_cpu="arm64"' >> out/Default/args.gn
+        echo 'chrome_pgo_phase = 0' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine
