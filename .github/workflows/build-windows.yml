@@ -2,7 +2,9 @@ name: Build Flux (Windows)
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -34,7 +36,7 @@ jobs:
     - name: Apply Flux Engine Patch
       run: |
         cd chromium_build\src
-        git apply ../../flux-config/flux_engine_v1.patch
+        git apply --binary --3way ../../flux-config/flux_engine_v1.patch
       shell: cmd
 
     - name: Configure Flux Build Flags

@@ -2,7 +2,9 @@ name: Build Flux (macOS)
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -43,7 +45,7 @@ jobs:
     - name: Apply Flux Engine Patch
       run: |
         cd chromium_build/src
-        git apply ../../flux-config/flux_engine_v1.patch
+        git apply --binary --3way ../../flux-config/flux_engine_v1.patch
 
     - name: Configure Flux Build Flags
       run: |
@@ -54,6 +56,7 @@ jobs:
         echo 'target_os="mac"' >> out/Default/args.gn
         echo 'target_cpu="arm64"' >> out/Default/args.gn
         echo 'chrome_pgo_phase = 0' >> out/Default/args.gn
+        echo 'mac_sdk_min = "14.5"' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine
