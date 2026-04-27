@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14 # M1/ARM64 runner
+    runs-on: macos-15 # M1/ARM64 runner with Xcode 16 / macOS 15 SDK
 
     steps:
     - name: Checkout Flux Config
@@ -23,10 +23,6 @@ jobs:
         sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/*
         df -h
 
-    - name: Select Xcode Version
-      run: |
-        sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
-        xcodebuild -version
 
     - name: Setup depot_tools
       run: |
