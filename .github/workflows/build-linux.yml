@@ -44,8 +44,8 @@ jobs:
         mkdir -p out/Default
         cp ../../flux-config/flux_build_flags.gn out/Default/args.gn
         # Update target_os and target_cpu for Linux
-        sed -i 's/target_os = "mac"/target_os = "linux"/' out/Default/args.gn
-        sed -i 's/target_cpu = "arm64"/target_cpu = "x64"/' out/Default/args.gn
+        echo 'target_os = "linux"' >> out/Default/args.gn
+        echo 'target_cpu = "x64"' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine

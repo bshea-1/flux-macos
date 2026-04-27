@@ -11,8 +11,7 @@ symbol_level = 0
 blink_symbol_level = 0
 
 # --- Target Architecture ---
-target_os = "mac"
-target_cpu = "arm64"
+# target_os and target_cpu are set dynamically by CI workflows
 
 # --- Compiler Optimizations (PDF: Compiler-Level Optimizations) ---
 # ThinLTO: Optimized binary layout and inter-procedural calls

@@ -42,7 +42,8 @@ jobs:
         cd chromium_build\src
         mkdir out\Default
         copy ..\..\flux-config\flux_build_flags.gn out\Default\args.gn
-        python -c "content = open('out/Default/args.gn').read().replace('target_os = \"mac\"', 'target_os = \"win\"').replace('target_cpu = \"arm64\"', 'target_cpu = \"x64\"'); open('out/Default/args.gn', 'w').write(content)"
+        echo target_os = "win">> out\Default\args.gn
+        echo target_cpu = "x64">> out\Default\args.gn
         set DEPOT_TOOLS_WIN_TOOLCHAIN=0
         gn gen out\Default
       shell: cmd

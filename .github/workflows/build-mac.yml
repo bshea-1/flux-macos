@@ -52,6 +52,7 @@ jobs:
         # Copy the build flags and ensure target_os is set to mac
         cp ../../flux-config/flux_build_flags.gn out/Default/args.gn
         echo 'target_os="mac"' >> out/Default/args.gn
+        echo 'target_cpu="arm64"' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine
