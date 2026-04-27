@@ -35,9 +35,10 @@ jobs:
 
     - name: Apply Flux Engine Patch
       run: |
-        cd chromium_build\src
-        git apply --binary --ignore-whitespace ../../flux-config/flux_engine_v1.patch
-      shell: cmd
+        cd chromium_build/src
+        sed -i 's/\r$//' ../../flux-config/flux_engine_v1.patch
+        git apply ../../flux-config/flux_engine_v1.patch
+      shell: bash
 
     - name: Configure Flux Build Flags
       run: |

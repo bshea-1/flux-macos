@@ -23,12 +23,6 @@ jobs:
         sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/*
         df -h
 
-    - name: Select Xcode Version
-      run: |
-        # Use the latest stable Xcode 15 on macOS 14 runners
-        sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
-        xcodebuild -version
-
     - name: Setup depot_tools
       run: |
         git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
@@ -56,7 +50,6 @@ jobs:
         echo 'target_os="mac"' >> out/Default/args.gn
         echo 'target_cpu="arm64"' >> out/Default/args.gn
         echo 'chrome_pgo_phase = 0' >> out/Default/args.gn
-        echo 'mac_sdk_min = "14.5"' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine
