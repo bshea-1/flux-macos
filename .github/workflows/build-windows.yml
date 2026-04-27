@@ -18,49 +18,52 @@ jobs:
     - name: Setup depot_tools
       run: |
         git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-        echo "$PWD/depot_tools" >> $GITHUB_PATH
-      shell: bash
+        echo %GITHUB_WORKSPACE%\depot_tools>> %GITHUB_PATH%
+      shell: cmd
 
     - name: Fetch Chromium (Shallow clone to save space)
       run: |
-        mkdir -p chromium_build
+        mkdir chromium_build
         cd chromium_build
+        set DEPOT_TOOLS_WIN_TOOLCHAIN=0
         fetch --no-history chromium
         cd src
-        git checkout d1773c3c49faf6bea8dac4dcbba2b751d25b09a1 || true
-      shell: bash
+        git checkout d1773c3c49faf6bea8dac4dcbba2b751d25b09a1 || cd .
+      shell: cmd
 
     - name: Apply Flux Engine Patch
       run: |
-        cd chromium_build/src
-        git apply ../../flux-config/flux_engine_v1.patch
-      shell: bash
+        cd chromium_build\src
+        git apply ..\..\flux-config\flux_engine_v1.patch
+      shell: cmd
 
     - name: Configure Flux Build Flags
       run: |
-        cd chromium_build/src
-        mkdir -p out/Default
-        cp ../../flux-config/flux_build_flags.gn out/Default/args.gn
-        sed -i 's/target_os = "mac"/target_os = "win"/g' out/Default/args.gn
-        sed -i 's/target_cpu = "arm64"/target_cpu = "x64"/g' out/Default/args.gn
-        gn gen out/Default
-      shell: bash
+        cd chromium_build\src
+        mkdir out\Default
+        copy ..\..\flux-config\flux_build_flags.gn out\Default\args.gn
+        python -c "content = open('out/Default/args.gn').read().replace('target_os = \"mac\"', 'target_os = \"win\"').replace('target_cpu = \"arm64\"', 'target_cpu = \"x64\"'); open('out/Default/args.gn', 'w').write(content)"
+        set DEPOT_TOOLS_WIN_TOOLCHAIN=0
+        gn gen out\Default
+      shell: cmd
 
     - name: Compile Flux Engine
       run: |
-        cd chromium_build/src
-        autoninja -C out/Default chrome
-      shell: bash
+        cd chromium_build\src
+        set DEPOT_TOOLS_WIN_TOOLCHAIN=0
+        autoninja -C out\Default chrome
+      shell: cmd
 
     - name: Package Windows Installer
       run: |
-        cd chromium_build/src
-        autoninja -C out/Default mini_installer
-      shell: bash
+        cd chromium_build\src
+        set DEPOT_TOOLS_WIN_TOOLCHAIN=0
+        autoninja -C out\Default mini_installer
+      shell: cmd
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Flux-Windows-x64
-        path: chromium_build/src/out/Default/mini_installer.exe
+        path: chromium_build\src\out\Default\mini_installer.exe
         retention-days: 7
