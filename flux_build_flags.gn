@@ -1,0 +1,63 @@
+# =============================================================
+# NEURON BROWSER — Optimized Build Configuration
+# Based on: "Chromium Fork for Faster Browsing" specifications
+# =============================================================
+
+# --- Core Build Mode ---
+is_debug = false
+is_official_build = true
+is_component_build = false
+symbol_level = 0
+blink_symbol_level = 0
+
+# --- Target Architecture ---
+target_os = "mac"
+target_cpu = "arm64"
+
+# --- Compiler Optimizations (PDF: Compiler-Level Optimizations) ---
+# ThinLTO: Optimized binary layout and inter-procedural calls
+use_thin_lto = true
+thin_lto_enable_optimizations = true
+
+# Profile-Guided Optimization: Optimize most common code paths
+# Phase 2 = consume PGO profiles for optimal binary layout
+chrome_pgo_phase = 2
+
+# Use LLD linker for faster linking with LTO
+use_lld = true
+
+# --- V8 Engine Optimizations (PDF: V8 Engine and Compilation Pipeline) ---
+v8_enable_maglev = true
+v8_enable_turbofan = true
+v8_symbol_level = 0
+v8_enable_fast_mksnapshot = true
+v8_enable_lazy_source_positions = true
+v8_enable_concurrent_marking = true
+
+# --- Graphics Pipeline (PDF: Zero-Copy and Skia Graphite) ---
+enable_vulkan = true
+angle_enable_vulkan = true
+use_dawn = true
+
+# --- Codec Support ---
+proprietary_codecs = true
+ffmpeg_branding = "Chrome"
+enable_widevine = true
+
+# --- Dependency Stripping (PDF: Dependency Stripping) ---
+# Remove unused features to lower background CPU/memory footprint
+enable_reporting = false
+
+# --- Disable Debug Overhead ---
+dcheck_always_on = false
+enable_expensive_dchecks = false
+v8_dcheck_always_on = false
+exclude_unwind_tables = true
+
+# --- Google Identity Integration ---
+google_api_key = "dummy_api_key_not_required"
+google_default_client_id = "299743213142-o3mm36okhtn39geth4fv1lvm4ecbi405.apps.googleusercontent.com"
+google_default_client_secret = "REPLACE_WITH_YOUR_SECRET"
+
+# --- V8 Raw Memory Optimization ---
+v8_enable_pointer_compression = true

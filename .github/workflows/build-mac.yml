@@ -1,0 +1,67 @@
+name: Build Flux (macOS)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14 # M1/ARM64 runner
+
+    steps:
+    - name: Checkout Flux Config
+      uses: actions/checkout@v4
+      with:
+        path: flux-config
+
+    - name: Free up disk space (macOS)
+      run: |
+        sudo rm -rf /Applications/Xcode_14*.app
+        sudo rm -rf /Applications/Xcode_15*.app || true
+        sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/*
+        df -h
+
+    - name: Setup depot_tools
+      run: |
+        git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+        echo "$PWD/depot_tools" >> $GITHUB_PATH
+
+    - name: Fetch Chromium (Shallow clone to save space)
+      run: |
+        mkdir -p chromium_build
+        cd chromium_build
+        fetch --no-history chromium
+        cd src
+        git checkout d1773c3c49faf6bea8dac4dcbba2b751d25b09a1 || true
+
+    - name: Apply Flux Engine Patch
+      run: |
+        cd chromium_build/src
+        git apply ../../flux-config/flux_engine_v1.patch
+
+    - name: Configure Flux Build Flags
+      run: |
+        cd chromium_build/src
+        mkdir -p out/Default
+        # Copy the build flags and ensure target_os is set to mac
+        cp ../../flux-config/flux_build_flags.gn out/Default/args.gn
+        echo 'target_os="mac"' >> out/Default/args.gn
+        gn gen out/Default
+
+    - name: Compile Flux Engine
+      run: |
+        cd chromium_build/src
+        autoninja -C out/Default chrome
+
+    - name: Package macOS App
+      run: |
+        cd chromium_build/src
+        autoninja -C out/Default mac_installer
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Flux-MacOS-ARM64
+        path: chromium_build/src/out/Default/*.dmg
+        retention-days: 7
