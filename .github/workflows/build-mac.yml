@@ -57,6 +57,7 @@ jobs:
         echo 'target_cpu="arm64"' >> out/Default/args.gn
         echo 'chrome_pgo_phase = 0' >> out/Default/args.gn
         echo 'mac_sdk_min = "14.5"' >> out/Default/args.gn
+        echo 'mac_sdk_path = "/Applications/Xcode_15.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk"' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine

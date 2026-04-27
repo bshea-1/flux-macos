@@ -20,7 +20,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3 git curl xz-utils bzip2 pkg-config libnss3-dev libcups2-dev libpci-dev libkrb5-dev libatk1.0-dev libatk-bridge2-0-dev libdrm-dev libmesa-dev libgbm-dev libasound2-dev
+        sudo apt-get install -y python3 git curl xz-utils bzip2 pkg-config libnss3-dev libcups2-dev libpci-dev libkrb5-dev libatk1.0-dev libatk-bridge2.0-dev libdrm-dev libgl1-mesa-dev libgbm-dev libasound2-dev
 
     - name: Setup depot_tools
       run: |
