@@ -1,0 +1,66 @@
+name: Build Flux (Windows)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Flux Config
+      uses: actions/checkout@v4
+      with:
+        path: flux-config
+
+    - name: Setup depot_tools
+      run: |
+        git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+        echo "$PWD/depot_tools" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Fetch Chromium (Shallow clone to save space)
+      run: |
+        mkdir -p chromium_build
+        cd chromium_build
+        fetch --no-history chromium
+        cd src
+        git checkout d1773c3c49faf6bea8dac4dcbba2b751d25b09a1 || true
+      shell: bash
+
+    - name: Apply Flux Engine Patch
+      run: |
+        cd chromium_build/src
+        git apply ../../flux-config/flux_engine_v1.patch
+      shell: bash
+
+    - name: Configure Flux Build Flags
+      run: |
+        cd chromium_build/src
+        mkdir -p out/Default
+        cp ../../flux-config/flux_build_flags.gn out/Default/args.gn
+        sed -i 's/target_os = "mac"/target_os = "win"/g' out/Default/args.gn
+        sed -i 's/target_cpu = "arm64"/target_cpu = "x64"/g' out/Default/args.gn
+        gn gen out/Default
+      shell: bash
+
+    - name: Compile Flux Engine
+      run: |
+        cd chromium_build/src
+        autoninja -C out/Default chrome
+      shell: bash
+
+    - name: Package Windows Installer
+      run: |
+        cd chromium_build/src
+        autoninja -C out/Default mini_installer
+      shell: bash
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Flux-Windows-x64
+        path: chromium_build/src/out/Default/mini_installer.exe
+        retention-days: 7
