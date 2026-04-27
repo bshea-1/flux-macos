@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15 # M1/ARM64 runner with Xcode 16 / macOS 15 SDK
+    runs-on: macos-14 # M1/ARM64 runner with Xcode 15.4 / macOS 14.5 SDK
 
     steps:
     - name: Checkout Flux Config
@@ -22,12 +22,6 @@ jobs:
         sudo rm -rf /Applications/Xcode_14*.app
         sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/*
         df -h
-
-
-    - name: Select Xcode Version
-      run: |
-        sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer || true
-        xcodebuild -version
 
     - name: Setup depot_tools
       run: |
@@ -56,7 +50,7 @@ jobs:
         echo 'target_os="mac"' >> out/Default/args.gn
         echo 'target_cpu="arm64"' >> out/Default/args.gn
         echo 'chrome_pgo_phase = 0' >> out/Default/args.gn
-        echo 'use_clang_modules = false' >> out/Default/args.gn
+        echo 'mac_sdk_min = "14.0"' >> out/Default/args.gn
         gn gen out/Default
 
     - name: Compile Flux Engine
