@@ -6953,10 +6953,10 @@ index 4ad0bb0eb1..48d20d1f73 100644
  
  int GetDataVersion() {
 diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
-index 96be9c5824..4f1adbb82d 100644
+index 96be9c5824..f9e6a24ad1 100644
 --- a/content/browser/renderer_host/render_process_host_impl.cc
 +++ b/content/browser/renderer_host/render_process_host_impl.cc
-@@ -3732,6 +3732,11 @@ void RenderProcessHostImpl::AppendRendererCommandLine(
+@@ -3732,6 +3732,28 @@ void RenderProcessHostImpl::AppendRendererCommandLine(
                                   "--disable-optimizing-compilers");
    }
  
@@ -6964,6 +6964,23 @@ index 96be9c5824..4f1adbb82d 100644
 +  AppendToCommaSeparatedSwitch(command_line,
 +                               blink::switches::kJavaScriptFlags,
 +                               "--minor-mc --harmony");
++
++  // --- Flux JetStream 3.0 Optimization ---
++  // 1. WasmGC: Enables WebAssembly Garbage Collection proposal.
++  //    Critical for Kotlin-compose-wasm (was scoring 5.15 without this).
++  // 2. wasm-opt: Enables Wasm optimization passes in V8's TurboFan.
++  // 3. turbo-inline-js-wasm-calls: Inlines JS<->Wasm boundary calls,
++  //    eliminating costly trampoline overhead on every Wasm function call.
++  // 4. turbo-fast-api-calls: Speeds up C++ Fast API calls from JavaScript.
++  // 5. wasm-tier-up: Forces eager TurboFan compilation for all Wasm modules
++  //    instead of staying in Liftoff (baseline) interpreter mode.
++  AppendToCommaSeparatedSwitch(command_line,
++                               blink::switches::kJavaScriptFlags,
++                               "--experimental-wasm-gc"
++                               " --wasm-opt"
++                               " --turbo-inline-js-wasm-calls"
++                               " --turbo-fast-api-calls"
++                               " --wasm-tier-up");
 +
    if (DisallowV8FeatureFlagOverrides()) {
      command_line->AppendSwitch(switches::kDisallowV8FeatureFlagOverrides);
