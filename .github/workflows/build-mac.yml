@@ -48,7 +48,7 @@ jobs:
         sudo mkdir -p "$SDK_PATH/usr/include"
         
         # DarwinBasic.modulemap
-        echo 'module MachO [system] { header "Availability.h" export * }' | sudo tee "$SDK_PATH/usr/include/DarwinBasic.modulemap"
+        echo 'module MachO [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinBasic.modulemap"
         
         # DarwinFoundation1.modulemap
         echo 'module _DarwinFoundation1 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation1.modulemap"
