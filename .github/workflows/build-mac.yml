@@ -46,6 +46,16 @@ jobs:
         cd chromium_build/src
         git apply --binary --ignore-whitespace ../../flux-config/flux_engine_v1.patch
 
+    - name: Fix Apple SDK Module Maps
+      run: |
+        SDK_PATH=$(xcrun --show-sdk-path)
+        echo "SDK Path: $SDK_PATH"
+        sudo mkdir -p "$SDK_PATH/usr/include"
+        echo 'module DarwinBasic [system] { header "Availability.h" export * }' | sudo tee "$SDK_PATH/usr/include/DarwinBasic.modulemap"
+        echo 'module DarwinFoundation1 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation1.modulemap"
+        echo 'module DarwinFoundation2 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation2.modulemap"
+        echo 'module DarwinFoundation3 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation3.modulemap"
+
     - name: Configure Flux Build Flags
       run: |
         cd chromium_build/src
@@ -60,7 +70,7 @@ jobs:
     - name: Compile Flux Engine
       run: |
         cd chromium_build/src
-        autoninja -C out/Default chrome
+        autoninja -C out/Default chrome || { cat out/Default/siso_output; exit 1; }
 
     - name: Package macOS App
       run: |
