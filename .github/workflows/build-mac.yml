@@ -51,10 +51,21 @@ jobs:
         SDK_PATH=$(xcrun --show-sdk-path)
         echo "SDK Path: $SDK_PATH"
         sudo mkdir -p "$SDK_PATH/usr/include"
-        echo 'module DarwinBasic [system] { header "Availability.h" export * }' | sudo tee "$SDK_PATH/usr/include/DarwinBasic.modulemap"
-        echo 'module DarwinFoundation1 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation1.modulemap"
-        echo 'module DarwinFoundation2 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation2.modulemap"
-        echo 'module DarwinFoundation3 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation3.modulemap"
+        
+        # DarwinBasic.modulemap
+        echo 'module MachO [system] { header "Availability.h" export * }' | sudo tee "$SDK_PATH/usr/include/DarwinBasic.modulemap"
+        
+        # DarwinFoundation1.modulemap
+        echo 'module _DarwinFoundation1 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation1.modulemap"
+        echo 'module _AvailabilityInternal [system] {}' | sudo tee -a "$SDK_PATH/usr/include/DarwinFoundation1.modulemap"
+        
+        # DarwinFoundation2.modulemap
+        echo 'module _DarwinFoundation2 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation2.modulemap"
+        echo 'module alloca [system] {}' | sudo tee -a "$SDK_PATH/usr/include/DarwinFoundation2.modulemap"
+        
+        # DarwinFoundation3.modulemap
+        echo 'module _DarwinFoundation3 [system] {}' | sudo tee "$SDK_PATH/usr/include/DarwinFoundation3.modulemap"
+        echo 'module xlocale [system] {}' | sudo tee -a "$SDK_PATH/usr/include/DarwinFoundation3.modulemap"
 
     - name: Configure Flux Build Flags
       run: |
