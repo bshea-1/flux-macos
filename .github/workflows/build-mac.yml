@@ -41,6 +41,13 @@ jobs:
         cd chromium_build/src
         git apply --binary --ignore-whitespace --exclude=chrome/app/chromium_strings.grd ../../flux-config/flux_engine_v1.patch
 
+    - name: Fix missing SDK headers
+      run: |
+        cd chromium_build/src
+        # Manually declare fileport functions in files that need them to bypass missing sys/fileport.h
+        sed -i '' 's/#include <sys\/fileport.h>/extern "C" int fileport_makeport(int, mach_port_t*); extern "C" int fileport_makefd(mach_port_t);/g' mojo/core/ipcz_driver/wrapped_platform_handle.cc
+        sed -i '' 's/#include <sys\/fileport.h>/extern "C" int fileport_makeport(int, mach_port_t*); extern "C" int fileport_makefd(mach_port_t);/g' mojo/core/channel_mac.cc
+
     - name: Configure Flux Build Flags
       run: |
         cd chromium_build/src
