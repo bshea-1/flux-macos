@@ -41,12 +41,50 @@ jobs:
         cd chromium_build/src
         git apply --binary --ignore-whitespace --exclude=chrome/app/chromium_strings.grd ../../flux-config/flux_engine_v1.patch
 
-    - name: Fix missing SDK headers
+    - name: Fix missing SDK headers (Surgical Patch)
       run: |
         cd chromium_build/src
-        # Manually declare fileport functions in files that need them to bypass missing sys/fileport.h
-        sed -i '' 's/#include <sys\/fileport.h>/extern "C" int fileport_makeport(int, mach_port_t*); extern "C" int fileport_makefd(mach_port_t);/g' mojo/core/ipcz_driver/wrapped_platform_handle.cc
-        sed -i '' 's/#include <sys\/fileport.h>/extern "C" int fileport_makeport(int, mach_port_t*); extern "C" int fileport_makefd(mach_port_t);/g' mojo/core/channel_mac.cc
+        python3 - <<EOF
+        import os
+
+        def patch_file(path, old, new):
+            if not os.path.exists(path):
+                print(f"Skipping {path} (not found)")
+                return
+            with open(path, 'r') as f:
+                content = f.read()
+            if old in content:
+                with open(path, 'w') as f:
+                    f.write(content.replace(old, new))
+                print(f"Patched {path}")
+            else:
+                print(f"Already patched or target not found in {path}")
+
+        # Fix mojo fileport.h
+        fileport_fix = 'extern "C" int fileport_makeport(int, mach_port_t*); extern "C" int fileport_makefd(mach_port_t);'
+        patch_file('mojo/core/ipcz_driver/wrapped_platform_handle.cc', '#include <sys/fileport.h>', fileport_fix)
+        patch_file('mojo/core/channel_mac.cc', '#include <sys/fileport.h>', fileport_fix)
+
+        # Fix Crashpad macOS 15 SDK mismatch
+        crashpad_path = 'third_party/crashpad/crashpad/util/mach/exc_server_variants.cc'
+        if os.path.exists(crashpad_path):
+            with open(crashpad_path, 'r') as f:
+                lines = f.readlines()
+            with open(crashpad_path, 'w') as f:
+                skipping = False
+                for line in lines:
+                    # Skip the protected exception traits and case blocks
+                    if 'IdentityProtected' in line and ('using' in line or 'static kern_return_t' in line or 'case MachExcTraits::' in line):
+                        f.write(f"// SDK FIX SKIP: {line}")
+                        if 'case MachExcTraits::' in line:
+                            skipping = True
+                    elif skipping and 'return true;' in line:
+                        f.write(f"// SDK FIX SKIP: {line}")
+                        skipping = False
+                    else:
+                        f.write(line)
+            print(f"Patched {crashpad_path}")
+        EOF
 
     - name: Configure Flux Build Flags
       run: |
