@@ -38,7 +38,7 @@ jobs:
     - name: Apply Flux Engine Patch
       run: |
         cd chromium_build/src
-        git apply --ignore-whitespace --exclude=chrome/app/chromium_strings.grd ../../flux-config/flux_engine_v1.patch
+        git apply --binary --ignore-whitespace --exclude=chrome/app/chromium_strings.grd ../../flux-config/flux_engine_v1.patch
 
     - name: Configure Flux Build Flags
       run: |
@@ -54,7 +54,7 @@ jobs:
     - name: Compile Flux Engine
       run: |
         cd chromium_build/src
-        autoninja -C out/Default chrome
+        autoninja -C out/Default chrome || { cat out/Default/siso_output; exit 1; }
 
     - name: Package Linux Binary
       run: |

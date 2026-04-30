@@ -55,7 +55,7 @@ jobs:
       run: |
         cd chromium_build\src
         set DEPOT_TOOLS_WIN_TOOLCHAIN=0
-        autoninja -C out\Default chrome
+        autoninja -C out\Default chrome || (type out\Default\siso_output & exit /b 1)
       shell: cmd
 
     - name: Package Windows Installer
