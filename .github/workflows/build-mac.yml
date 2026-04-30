@@ -49,6 +49,15 @@ jobs:
         cd chromium_build/src
         git apply --binary --ignore-whitespace --exclude=chrome/app/chromium_strings.grd ../../flux-config/flux_engine_v1.patch
 
+    - name: Fix missing private SDK headers
+      run: |
+        cd chromium_build/src
+        # sys/fileport.h is a private Apple header not in public SDKs.
+        # Replace with direct function declarations.
+        sed -i '' 's|#include <sys/fileport.h>|extern "C" int fileport_makeport(int, mach_port_t*); extern "C" int fileport_makefd(mach_port_t);|' \
+          mojo/core/ipcz_driver/wrapped_platform_handle.cc \
+          mojo/core/channel_mac.cc
+
     - name: Configure Flux Build Flags
       run: |
         cd chromium_build/src
