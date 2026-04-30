@@ -19,12 +19,10 @@ jobs:
 
     - name: Select Xcode and verify SDK
       run: |
-        # Use Xcode 16 which ships with macOS 15+ SDK
         sudo xcode-select -s /Applications/Xcode_16.app || sudo xcode-select -s /Applications/Xcode.app
         xcode-select -p
         xcrun --show-sdk-path
         xcrun --show-sdk-version
-        ls "$(xcrun --show-sdk-path)/../"
 
     - name: Free up disk space
       run: |
@@ -49,14 +47,17 @@ jobs:
         cd chromium_build/src
         git apply --binary --ignore-whitespace --exclude=chrome/app/chromium_strings.grd ../../flux-config/flux_engine_v1.patch
 
-    - name: Fix missing private SDK headers
+    - name: Fix SDK compatibility issues
       run: |
         cd chromium_build/src
-        # sys/fileport.h is a private Apple header not in public SDKs.
-        # Replace with direct function declarations.
+        # 1) sys/fileport.h is a private Apple header not in any public SDK.
         sed -i '' 's|#include <sys/fileport.h>|extern "C" int fileport_makeport(int, mach_port_t*); extern "C" int fileport_makefd(mach_port_t);|' \
           mojo/core/ipcz_driver/wrapped_platform_handle.cc \
           mojo/core/channel_mac.cc
+        # 2) kCGImageByteOrder32Host was removed in macOS 15 SDK.
+        #    On ARM64 (little-endian) it equals kCGImageByteOrder32Little.
+        grep -rl 'kCGImageByteOrder32Host' --include='*.mm' --include='*.cc' --include='*.h' --include='*.m' . | \
+          xargs sed -i '' 's/kCGImageByteOrder32Host/kCGImageByteOrder32Little/g' || true
 
     - name: Configure Flux Build Flags
       run: |
