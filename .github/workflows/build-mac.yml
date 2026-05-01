@@ -58,6 +58,8 @@ jobs:
         #    On ARM64 (little-endian) it equals kCGImageByteOrder32Little.
         grep -rl 'kCGImageByteOrder32Host' --include='*.mm' --include='*.cc' --include='*.h' --include='*.m' . | \
           xargs sed -i '' 's/kCGImageByteOrder32Host/kCGImageByteOrder32Little/g' || true
+        # 3) NSScreen.CGDirectDisplayID does not exist in macOS 15 SDK.
+        sed -i '' 's|if (@available(macOS 26, \*)) {|if (false) {|' ui/display/mac/screen_utils_mac.mm
 
     - name: Configure Flux Build Flags
       run: |
